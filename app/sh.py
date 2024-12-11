@@ -10,4 +10,9 @@ class Shell:
         # prompt
         sys.stdout.write("$ ")
 
-        inp = input()
+        cmd = input()
+
+        cmds = {}
+
+        if cmd not in cmds:
+            sys.stdout.write(f"{cmd}: command not found\n")
