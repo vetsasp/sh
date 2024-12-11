@@ -1,5 +1,7 @@
 import sys 
 
+from app.validate import validateCommand
+
 
 
 class Shell:
@@ -23,7 +25,7 @@ class Shell:
         # print(f"'{args}'", file=sys.stderr)  # DEBUG
         
         # Validate command and args
-        valid = self.validCommand(cmd)
+        valid = validateCommand(cmd)
 
         if not valid:
             sys.stdout.write(f"{cmd}: command not found\n")
@@ -39,22 +41,10 @@ class Shell:
 
     def runCommand(self, cmd, args):
         cmds = {
-            "exit": lambda x: sys.exit(int(x[0])),
+            "exit": lambda args: sys.exit() if not args else sys.exit(int(args[0])),
+            "echo": lambda args: sys.stdout.write(" ".join(args) + "\n"),
         }
 
         cmds[cmd](args)
 
-    def validCommand(self, cmd):
-        '''
-          takes in a command
-          if command is valid, returns expected args
-        ''' 
-        cmds = {
-            # "exit": lambda x: isinstance(x[0], int)
-            "exit": lambda x: x[0].isdigit()
-        }
-
-        if cmd in cmds:
-            return cmds[cmd]
-        
-        return None 
+    
