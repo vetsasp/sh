@@ -1,6 +1,7 @@
 import sys 
 
 from app.validate import validateCommand
+from app.run import runCommand
 
 
 
@@ -36,15 +37,4 @@ class Shell:
             return
 
         # Run command
-        self.runCommand(cmd, args)
-
-
-    def runCommand(self, cmd, args):
-        cmds = {
-            "exit": lambda args: sys.exit() if not args else sys.exit(int(args[0])),
-            "echo": lambda args: sys.stdout.write(" ".join(args) + "\n"),
-        }
-
-        cmds[cmd](args)
-
-    
+        runCommand(cmd, args)
