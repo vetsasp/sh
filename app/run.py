@@ -1,4 +1,4 @@
-import sys
+import sys, os
 from app.validate import validateCommand
 
 def runCommand(cmd, args):
@@ -12,7 +12,19 @@ def runCommand(cmd, args):
         cmds[cmd](args)
 
 def runType(args):
+    # Check if command is a shell builtin
     if validateCommand(args[0]):
         sys.stdout.write(args[0] + " is a shell builtin\n")
-    else:
-        sys.stdout.write(f"{args[0]}: not found\n")
+        return 
+
+    # Check if command is in PATH
+    path_env = os.environ.get("PATH")
+
+    paths = path_env.split(':')
+
+    for path in paths:
+        if os.path.exists(path + '/' + args[0]):
+            sys.stdout.write(args[0] + " is " + path + '/' + args[0] + "\n")
+            return
+
+    sys.stdout.write(f"{args[0]}: not found\n")
