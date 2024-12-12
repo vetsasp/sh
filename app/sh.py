@@ -21,7 +21,7 @@ class Shell:
         # cmd, *args = cmd.split(" ")
         cmd, args = self.parse(cmd)
 
-        # print(f"cmd: {cmd}\nargs: {args}")
+        # print(f"cmd: '{cmd}'\nargs: '{args}'")
 
         if not cmd:
             return 
@@ -43,18 +43,37 @@ class Shell:
         sys.stdout.write("$ ")
 
     def parse(self, cmd):
-        # parse command and args
-        # maintain quotes 
-        parts = re.findall(
-            r'(?:"[^"\\]*(?:\\.[^"\\]*)*"|\'[^\'\\]*(?:\\.[^\'\\]*)*\'|\\(?:[^\'"]|\\.)*|[^\s"\']+)',
-              cmd)
-        cmd = parts[0] if parts else ''
-        args = parts[1:] if len(parts) > 1 else []
+        res = []
+        escapeCharacter = False
+        escapeSingeQuote = False
+        escapeDoubleQuote = False
+        word = ''
+        for c in cmd:
+            if c == '\\' and not escapeDoubleQuote and not escapeSingeQuote:
+                escapeCharacter = True
+            elif escapeCharacter:
+                word = word + c
+                escapeCharacter = False
+            elif c == "'" and not escapeDoubleQuote:
+                escapeSingeQuote = not escapeSingeQuote
+            elif c == '"' and not escapeSingeQuote:
+                escapeDoubleQuote = not escapeDoubleQuote
+            elif escapeSingeQuote or escapeDoubleQuote:
+                word = word + c
+            elif self.isWhitespace(c):
+                if word:
+                    res.append(word)
+                    word = ''
+            else:
+                word = word + c
 
-        # remove quotes
-        cmd = cmd.strip('"').strip("'")
-        args = [arg.strip('"').strip("'") for arg in args]
-        return cmd, args
+        res.append(word)
+        return res[0], res[1:]
+
+    def isWhitespace(self,c):
+        return c in {" ", "\t", "\n"} 
+
+    
 
     def checkShellCommand(self, cmd, args):
         if cmd == "pwd" and len(args) == 0:
