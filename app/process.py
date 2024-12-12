@@ -5,6 +5,7 @@ from app.find import *
 class Process:
     def __init__(self,  sh, cmd, args):
         self.sh = sh
+        self.cwd = sh.getcwd()
         self.cmd = cmd
         self.args = args
         self.c: Command = None
@@ -22,4 +23,6 @@ class Process:
     def run(self):
         # Run command
         c = self.c
-        c.run() if c.builtin else subprocess.run([c.path] + c.args) 
+        c.run() if c.builtin else subprocess.run(
+                [c.path] + c.args, cwd=self.cwd
+            ) 

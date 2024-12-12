@@ -1,4 +1,5 @@
 import sys
+from typing import Callable
 from app.find import find
 
 
@@ -9,7 +10,7 @@ class Command:
         self.args = args
         self.builtin: bool
         self.path: str
-        self.do: callable
+        self.do: Callable
         self.cmds = {
             "exit": (
                 lambda args: sys.exit() if not args \
@@ -21,9 +22,6 @@ class Command:
             "type": (
                 self.runType, 
                 lambda args: len(args) == 1),
-            "pwd": (
-                self.runPwd, 
-                lambda args: len(args) == 0),
         }
   
 
@@ -67,7 +65,3 @@ class Command:
             return
 
         sys.stdout.write(f"{c.cmd}: not found\n")
-        
-    def runPwd(self, _):
-        cwd = self.proc.sh.getcwd()
-        sys.stdout.write(cwd + "\n")
