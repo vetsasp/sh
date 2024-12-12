@@ -21,7 +21,7 @@ class Shell:
         # cmd, *args = cmd.split(" ")
         cmd, args = self.parse(cmd)
 
-        print(f"cmd: {cmd}\nargs: {args}")
+        # print(f"cmd: {cmd}\nargs: {args}")
 
         if not cmd:
             return 
