@@ -1,7 +1,6 @@
 import sys 
 
-from app.validate import validateCommand
-from app.run import runCommand
+from app.process import Process
 
 
 
@@ -26,15 +25,16 @@ class Shell:
         # print(f"'{args}'", file=sys.stderr)  # DEBUG
         
         # Validate command and args
-        valid = validateCommand(cmd)
-
-        if not valid:
-            sys.stdout.write(f"{cmd}: command not found\n")
-            return 
-
-        if not valid(args):
-            sys.stdout.write(f"{cmd}: invalid arguments\n")
-            return
+        # if not isCommand(cmd):
+        #     sys.stdout.write(f"{cmd}: command not found\n")
+        #     return 
+        
+        # if not validateCommand(cmd, args):
+        #     sys.stdout.write(f"{cmd}: invalid arguments\n")
+        #     return
 
         # Run command
-        runCommand(cmd, args)
+        p = Process(cmd, args)
+        if not p.validate():
+            return 
+        p.run()
