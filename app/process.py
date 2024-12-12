@@ -3,7 +3,8 @@ from app.commands import Command
 from app.find import *
 
 class Process:
-    def __init__(self, cmd, args):
+    def __init__(self,  sh, cmd, args):
+        self.sh = sh
         self.cmd = cmd
         self.args = args
         self.c: Command = None
@@ -11,7 +12,7 @@ class Process:
     def validate(self) -> bool:
         # Validate command and args
         try:
-            self.c = Command(self.cmd, self.args)
+            self.c = Command(self, self.cmd, self.args)
             self.c.validate()
         except ValueError as e:
             sys.stderr.write(str(e))
@@ -21,4 +22,4 @@ class Process:
     def run(self):
         # Run command
         c = self.c
-        c.run() if c.builtin else subprocess.run([c.path] + c.args)
+        c.run() if c.builtin else subprocess.run([c.path] + c.args) 
