@@ -22,6 +22,8 @@ class Command:
             "type": (
                 self.runType, 
                 lambda args: len(args) == 1),
+            "pwd": (None, None),
+            "cd": (None, None), 
         }
   
 
