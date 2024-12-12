@@ -49,11 +49,13 @@ class Shell:
         escapeDoubleQuote = False
         word = ''
         for c in cmd:
-            if c == '\\' and not escapeDoubleQuote and not escapeSingeQuote:
-                escapeCharacter = True
-            elif escapeCharacter:
+            if escapeCharacter:
+                if escapeDoubleQuote and c not in {'\\', '$', '"'}:
+                    word = word + '\\'
                 word = word + c
                 escapeCharacter = False
+            elif c == '\\' and not escapeSingeQuote:
+                escapeCharacter = True
             elif c == "'" and not escapeDoubleQuote:
                 escapeSingeQuote = not escapeSingeQuote
             elif c == '"' and not escapeSingeQuote:
@@ -72,8 +74,6 @@ class Shell:
 
     def isWhitespace(self,c):
         return c in {" ", "\t", "\n"} 
-
-    
 
     def checkShellCommand(self, cmd, args):
         if cmd == "pwd" and len(args) == 0:
