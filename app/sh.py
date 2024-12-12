@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, re
 
 from app.process import Process
 
@@ -18,8 +18,14 @@ class Shell:
         cmd = input()
 
         # separate command from args
-        cmd, *args = cmd.split(" ")
+        # cmd, *args = cmd.split(" ")
+        cmd, args = self.parse(cmd)
 
+        print(f"cmd: {cmd}\nargs: {args}")
+
+        if not cmd:
+            return 
+        
         # Check if command modifies shell
         shcmd = self.checkShellCommand(cmd, args)
         if shcmd:
@@ -35,6 +41,20 @@ class Shell:
     
     def prompt(self):
         sys.stdout.write("$ ")
+
+    def parse(self, cmd):
+        # parse command and args
+        # maintain quotes 
+        parts = re.findall(
+            r'(?:\"[^\"]*\"|\'[^\']*\'|\S)+',
+              cmd)
+        cmd = parts[0] if parts else ''
+        args = parts[1:] if len(parts) > 1 else []
+
+        # remove quotes
+        cmd = cmd.strip('"').strip("'")
+        args = [arg.strip('"').strip("'") for arg in args]
+        return cmd, args
 
     def checkShellCommand(self, cmd, args):
         if cmd == "pwd" and len(args) == 0:
